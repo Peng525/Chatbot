@@ -1,5 +1,6 @@
 name: AWS EC2 Deploy
 
+# 触发条件：当有新的 commit 被 push 到 main 分支时自动触发
 on:
   push:
     branches:
@@ -8,22 +9,39 @@ on:
 jobs:
   deploy:
     name: Deploy to EC2
-    runs-on: ubuntu-latest   # must be ubuntu-latest
+    runs-on: ubuntu-latest    # 必须指定在 ubuntu-latest 虚拟环境中运行构建
+    
     steps:
       - name: Checkout code
+        # 第一步：拉取仓库代码
         uses: actions/checkout@v3
 
       - name: Setup SSH
+        # 第二步：借助社区经典的 SSH 动作组件加载我们的私钥
         uses: webfactory/ssh-agent@v0.7.0
         with:
           ssh-private-key: ${{ secrets.EC2_KEY }}
 
       - name: Deploy application
+        # 第三步：通过 SSH 登录云服务器，串行执行自动化部署命令
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-          cd ~/chatbot_comp7940
+          
+          echo "开始进入云端项目代码目录..."
+          cd ~/ChatBot_Telegram/Chatbot
+          
+          echo "拉取 GitHub 远程主分支最新代码..."
           git pull origin main
-          # Restart chatbot inside venv
+          
+          echo "激活云端虚拟环境并更新依赖清单..."
+          source venv/bin/activate
+          pip install -r requirements.txt
+          
+          echo "【核心防御】安全清理旧的机器人后台进程，防止多实例 Token 抢占冲突..."
           pkill -f "python chatbot.py" || true
-          nohup ~/chatbot_comp7940/venv/bin/python chatbot.py > app.log 2>&1 &
+          
+          echo "在虚拟环境内利用 nohup 重新在后台拉起新版机器人程序..."
+          nohup ~/ChatBot_Telegram/Chatbot/venv/bin/python chatbot.py > app.log 2>&1 &
+          
+          echo "云端自动化部署结束！"
           EOF

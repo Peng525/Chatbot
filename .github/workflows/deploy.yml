@@ -20,7 +20,7 @@ jobs:
         # 第二步：借助社区经典的 SSH 动作组件加载我们的私钥
         uses: webfactory/ssh-agent@v0.7.0
         with:
-          ssh-private-key: ${{ secrets.EC2_KEY }}
+          ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
 
       - name: Deploy application
         # 第三步：通过 SSH 登录云服务器，串行执行自动化部署命令

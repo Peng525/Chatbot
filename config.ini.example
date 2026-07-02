@@ -1,0 +1,8 @@
+[TELEGRAM]
+ACCESS_TOKEN = your_telegram_bot_token_here
+
+[CHATGPT]
+API_KEY = your_azure_openai_api_key_here
+BASE_URL = https://your-resource-name.openai.azure.com
+MODEL = your-deployment-name
+API_VER = 2024-02-15-preview

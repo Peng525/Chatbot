@@ -1,0 +1,17 @@
+# 本地配置（含 API Key 与 Bot Token）
+config.ini
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# 运行时日志
+app.log
+*.log
+
+# 环境变量
+.env
+.env.*
